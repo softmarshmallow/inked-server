@@ -1,0 +1,73 @@
+type User {
+  id: ID! @id
+  name: String!
+  token: String @unique
+  robot: Boolean
+  settings: UserSettings @relation(link: INLINE)
+}
+
+type UserSettings{
+  id: ID! @id
+  favoriteNews: [News] @relation(link: INLINE)
+}
+
+type News{
+  id: ID! @id
+  title: String!
+  content: String!
+  provider: String
+  time: DateTime!
+  crawlingAt: DateTime! @createdAt
+  source: ContentSource! @default(value:NAVER)
+}
+
+type NewsMeta @embedded{
+  summary: String
+  subject: String
+  group: NewsGroup
+  spamMarks: [SpamMark]
+  category: NewsCategory
+  categories: [NewsCategory]
+  tags: [String]
+  updateTransactions: [UpdateTransaction]
+}
+
+type NewsGroup{
+  id: ID! @id
+  subject: String
+  time: DateTime
+  createdBy: User @relation(link: INLINE)
+  news: [News] @relation(link: INLINE)
+}
+
+type UpdateTransaction{
+  id: ID! @id
+  operation: UpdateTransactionOperation
+}
+
+type SpamMark @embedded{
+  by: User
+  at: DateTime @createdAt
+  spam: Boolean
+  reason: String
+}
+
+
+enum UpdateTransactionOperation{
+  REPLACED_SOURCE
+  INDEXED
+  ANALYZED
+  ELSE
+}
+
+
+enum ContentSource {
+  EBEST
+  NAVER
+  ELSE
+}
+
+enum NewsCategory{
+  WEATHER
+  UNCATEGORIZED
+}
