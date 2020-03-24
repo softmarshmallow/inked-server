@@ -22,7 +22,7 @@ type News{
 
 type NewsMeta @embedded{
   crawlingAt: DateTime! @createdAt
-  source: ContentSource! @default(value:NAVER)
+  source: ContentSource! @default(value:UNKNOWN)
   status: NewsProcessStatus! @default(value:CRAWLED)
   summary: String
   subject: String
@@ -72,7 +72,7 @@ enum UpdateTransactionOperation{
 enum ContentSource {
   EBEST
   NAVER
-  ELSE
+  UNKNOWN
 }
 
 enum NewsCategory{

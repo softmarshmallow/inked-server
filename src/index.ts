@@ -1,37 +1,28 @@
 import * as express from 'express'
 import * as bodyParser from 'body-parser'
-import { prisma } from './generated/prisma-client'
+import * as http from 'http'
+import {router} from "./routes";
 
-const app = express()
+const app = express();
 
-app.use(bodyParser.json())
+app.use(bodyParser.json());
+app.use('/api', router);
 
-app.post(`/user`, async (req, res) => {
-  const result = await prisma.createUser({
-    ...req.body,
-  })
-  res.json(result)
-})
+// region socket io
+import * as socket from 'socket.io'
+const server = new http.Server(app);
+const io = socket(server);
 
-app.post(`/news`, async (req, res) => {
-  const { title, content, time } = req.body
-  const result = await prisma.createNews({
-    title: title,
-    content: content,
-    time: time,
-    meta: {}
-  })
-  res.json(result)
-})
+server.listen(3001);
 
-
-app.get('news', async (req, res) => {
-  const result = await prisma.newses
-  res.json(result)
-})
-
-
+io.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
+});
+// endregion
 
 app.listen(3000, () =>
   console.log('Server is running on http://localhost:3000'),
-)
+);

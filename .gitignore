@@ -42,3 +42,4 @@ buildkite-script-*
 
 # prism specific
 generated
+docker-compose-production.yml
