@@ -6,10 +6,30 @@ const app = express()
 
 app.use(bodyParser.json())
 
-app.get(`/user`, async (req, res) => {
-  const result = await prisma.users()
+app.post(`/user`, async (req, res) => {
+  const result = await prisma.createUser({
+    ...req.body,
+  })
   res.json(result)
 })
+
+app.post(`/news`, async (req, res) => {
+  const { title, content, time } = req.body
+  const result = await prisma.createNews({
+    title: title,
+    content: content,
+    time: time,
+    meta: {}
+  })
+  res.json(result)
+})
+
+
+app.get('news', async (req, res) => {
+  const result = await prisma.newses
+  res.json(result)
+})
+
 
 
 app.listen(3000, () =>

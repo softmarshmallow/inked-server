@@ -17,11 +17,13 @@ type News{
   content: String!
   provider: String
   time: DateTime!
-  crawlingAt: DateTime! @createdAt
-  source: ContentSource! @default(value:NAVER)
+  meta: NewsMeta!
 }
 
 type NewsMeta @embedded{
+  crawlingAt: DateTime! @createdAt
+  source: ContentSource! @default(value:NAVER)
+  status: NewsProcessStatus! @default(value:CRAWLED)
   summary: String
   subject: String
   group: NewsGroup
@@ -50,6 +52,12 @@ type SpamMark @embedded{
   at: DateTime @createdAt
   spam: Boolean
   reason: String
+}
+
+enum NewsProcessStatus{
+  CRAWLED
+  INDEXED
+  ANALYZED
 }
 
 
