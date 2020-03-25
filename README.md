@@ -38,11 +38,22 @@ run server
 
 
 
-## Useful commands
+### realtime communication
+
+socket io related
+
+namespaces
+- crawler
+- engine
+- client
 
 
-
-```
-docker-compose up -d
-```
-
+events by namespaces
+- crawler
+    - on crawled
+- engine
+    - on crawled receive
+    - on analysis complete
+- client
+    - on new data
+    - on data update

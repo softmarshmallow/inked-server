@@ -51,8 +51,14 @@ type UpdateTransaction{
 type SpamMark @embedded{
   by: User
   at: DateTime @createdAt
-  spam: Boolean
+  spam: SpamTag! @default(value: UNTAGGED)
   reason: String
+}
+
+enum SpamTag {
+  SPAM
+  NOTSPAM
+  UNTAGGED
 }
 
 enum NewsProcessStatus{
