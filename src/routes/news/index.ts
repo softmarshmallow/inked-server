@@ -13,6 +13,6 @@ router.get('/recent', getRecentNewses);
 router.post('/crawled', postCrawledNews);
 router.put('/crawled', updateCrawledNews);
 router.get('/tag/spam', getRandomNewsBySpamTag);
-router.post('/tag/spam', postTagNewsWithSpamTag);
+router.patch('/tag/spam', postTagNewsWithSpamTag);
 
 export {router}
