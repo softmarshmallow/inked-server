@@ -1,5 +1,22 @@
 # inked server
 
+run docker compose
+
+`docker-compose up -d`
+
+
+install prisma cli
+`yarn install -g prisma`
+
+prisma generate
+`prisma generate`
+
+prisma deploy
+`prisma deploy`
+
+
+run server
+`yarn run dev`
 
 
 ### enviroments
