@@ -1,6 +1,7 @@
 import {prisma, SpamTag} from "../../generated/prisma-client";
 
 import {CREATED, CONFLICT, INTERNAL_SERVER_ERROR} from "http-status-codes";
+import moment = require("moment");
 
 const postCrawledNews = async (req, res) => {
     try {
@@ -75,11 +76,21 @@ const getAllNews = async (req, res) => {
     res.json(result)
 };
 
+const getRecentNewses = async (req, res) => {
+    var newDateObj = moment(Date.now()).subtract(5, 'm').toDate();
+
+    const result = await  prisma.newses({where: {
+    time_gte: newDateObj
+        }})
+    res.json(result)
+}
+
 
 export {
     postCrawledNews,
     updateCrawledNews,
     getAllNews,
+    getRecentNewses,
 
     // region spam
     getRandomNewsBySpamTag,
