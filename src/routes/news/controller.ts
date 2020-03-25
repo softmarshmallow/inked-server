@@ -5,7 +5,7 @@ import moment = require("moment");
 
 const postCrawledNews = async (req, res) => {
     try {
-        const {title, content, time, meta, originUrl} = req.body;
+        const {title, content, time, meta, originUrl, provider} = req.body;
         const newsExists = await prisma.$exists.news({
             originUrl: originUrl
         });
@@ -15,11 +15,12 @@ const postCrawledNews = async (req, res) => {
             const result = await prisma.createNews({
                 title: title,
                 content: content,
+                provider: provider,
                 time: time,
                 originUrl: originUrl,
                 meta: {create: meta}
             });
-            res.json(result)
+            res.status(CREATED).json(result);
         }
     } catch (e) {
         console.log(e)
@@ -80,8 +81,8 @@ const getRecentNewses = async (req, res) => {
     var newDateObj = moment(Date.now()).subtract(5, 'm').toDate();
 
     const result = await  prisma.newses({where: {
-    time_gte: newDateObj
-        }})
+    time_gte: newDateObj,
+        }, first: 50, orderBy: "time_ASC"});
     res.json(result)
 }
 
