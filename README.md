@@ -18,6 +18,9 @@ prisma deploy
 run server
 `yarn run dev`
 
+deploy server production
+`pm2 start ecosystem.config.js`
+
 
 ### enviroments
 

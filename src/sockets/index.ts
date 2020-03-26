@@ -32,13 +32,8 @@ export function initSockets(app) {
 
     clientIo.on('connection', function (socket) {
         console.log('clientIo connected');
-        socket.volatile.emit('feed', '{//todo new news data should go here}');
-        socket.on('chat message', function (msg, fn) {
-            console.log('message: ' + msg);
-
-            fn('true')
-        });
-
+        socket.broadcast.volatile.emit('feed', 'feed data here');
+        socket.broadcast.emit('feed', 'data');
         socket.on('mocknews', function (data, fn) {
             const news: NewsToClientEvent = {
                 data: {
@@ -56,8 +51,8 @@ export function initSockets(app) {
                     }
                 },
                 type: "new"
-            }
-            fn(news)
+            };
+            fn(news);
         })
     });
     clientIo.emit('hi', 'users!');
