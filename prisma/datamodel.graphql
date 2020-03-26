@@ -15,8 +15,8 @@ type News{
   id: ID! @id
   title: String!
   content: String!
-  originUrl: String! @unique
-  provider: String
+  originUrl: String @unique
+  provider: String!
   time: DateTime!
   meta: NewsMeta!
 }
