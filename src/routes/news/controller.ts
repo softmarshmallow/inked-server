@@ -6,9 +6,15 @@ import moment = require("moment");
 const postCrawledNews = async (req, res) => {
     try {
         const {title, content, time, meta, originUrl, provider} = req.body;
-        const newsExists = await prisma.$exists.news({
-            originUrl: originUrl
-        });
+        let newsExists: boolean;
+        if (originUrl == null){
+            newsExists = false;
+        }else {
+            newsExists = await prisma.$exists.news({
+                originUrl: originUrl
+            });
+        }
+
         if (newsExists) {
             res.status(CONFLICT).send(`record already exists with ${originUrl}`)
         } else {
