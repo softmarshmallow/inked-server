@@ -37,6 +37,7 @@ export function initSockets(app) {
         socket.on('mocknews', function (data, fn) {
             const news: NewsToClientEvent = {
                 data: {
+                    provider: "test",
                     id: undefined,
                     time: "now",
                     title: "title",
