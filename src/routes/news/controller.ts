@@ -113,6 +113,7 @@ async function analyzeCrawledNews(news: News): Promise<News> {
                 }
             }
         );
+        newsEventToClient(NewsRefreshType.ANALYZED, updated)
         return updated;
     } catch (e) {
         return null
@@ -156,7 +157,6 @@ async function replaceCrawledNews(targetId: string, updateWith: News,): Promise<
 async function indexNews(news: News) {
     // todo index to search engine
     const updated = await analyzeCrawledNews(news);
-    newsEventToClient(NewsRefreshType.ANALYZED, updated)
 }
 
 const getRandomNewsBySpamTag = async (req, res) => {

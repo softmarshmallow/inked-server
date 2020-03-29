@@ -34,36 +34,12 @@ export function initSockets(app) {
         });
     });
 
-
     clientIo = io.of('/client');
     crawlerIo = io.of('/crawler');
     engineIo = io.of('/engine');
 
     clientIo.on('connection', function (socket) {
         console.log('clientIo connected');
-        socket.broadcast.volatile.emit('feed', 'feed data here');
-        socket.broadcast.emit('feed', 'data');
-        socket.on('mocknews', function (data, fn) {
-            const news: NewsToClientEvent = {
-                data: {
-                    provider: "test",
-                    id: undefined,
-                    time: "now",
-                    title: "title",
-                    content: "content",
-                    originUrl: "https://news.com/1",
-                    meta: {
-                        crawlingAt: "now",
-                        source: "UNKNOWN",
-                        status: "CRAWLED",
-                        categories: ["UNCATEGORIZED"],
-                        tags: ["a", "b", "c"]
-                    }
-                },
-                type: NewsRefreshType.ANALYZED
-            };
-            fn(news);
-        })
     });
     clientIo.emit('hi', 'users!');
 
