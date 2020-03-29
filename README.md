@@ -3,6 +3,7 @@
 run docker compose
 
 `docker-compose up -d`
+> if productioon `sudo docker-compose -f docker-compose-production.yml up -d`
 
 
 install prisma cli

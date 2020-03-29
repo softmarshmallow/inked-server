@@ -41,7 +41,7 @@ const postCrawledNews = async (req, res) => {
         }
 
         if (exists) {
-            res.status(CONFLICT).send(reason)
+            res.status(CONFLICT).json({"reason": reason})
         } else {
             const result = await prisma.createNews({
                 title: title,
@@ -68,7 +68,7 @@ interface DuplicateCheckResponse {
 
 async function checkDuplicate(news: News): Promise<DuplicateCheckResponse> {
     try {
-        const res = await Axios.post<DuplicateCheckResponse>("http://localhost:8000/api/news/tools/duplicate-check", news);
+        const res = await Axios.post<DuplicateCheckResponse>("http://localhost:8001/api/news/tools/duplicate-check", news);
         return res.data
     } catch (e) {
         return {
