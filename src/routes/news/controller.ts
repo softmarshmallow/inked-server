@@ -3,6 +3,7 @@ import {News, NewsCategory, prisma, SpamMark, SpamTag} from "../../generated/pri
 import {CREATED, CONFLICT, INTERNAL_SERVER_ERROR, ACCEPTED, BAD_REQUEST} from "http-status-codes";
 import moment = require("moment");
 import Axios from "axios";
+import {newsEventToClient, NewsRefreshType} from "../../sockets";
 
 const postCrawledNews = async (req, res) => {
     try {
@@ -51,6 +52,7 @@ const postCrawledNews = async (req, res) => {
                 originUrl: originUrl,
                 meta: {create: meta}
             });
+            newsEventToClient(NewsRefreshType.NEW, result);
             indexNews(result);
             res.status(CREATED).json(result);
         }
@@ -146,14 +148,15 @@ async function replaceCrawledNews(targetId: string, updateWith: News,): Promise<
             }
         }
     );
-
+    newsEventToClient(NewsRefreshType.REPLACED, updated);
     indexNews(updated);
     return updated
 }
 
 async function indexNews(news: News) {
     // todo index to search engine
-    await analyzeCrawledNews(news)
+    const updated = await analyzeCrawledNews(news);
+    newsEventToClient(NewsRefreshType.ANALYZED, updated)
 }
 
 const getRandomNewsBySpamTag = async (req, res) => {

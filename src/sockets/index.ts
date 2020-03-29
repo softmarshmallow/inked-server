@@ -3,13 +3,23 @@ import * as http from 'http'
 // region socket io
 import * as socket from 'socket.io'
 import {News} from "../generated/prisma-client";
+import {Namespace} from "socket.io";
 
-
-interface NewsToClientEvent {
-    type: string
+export interface NewsToClientEvent {
+    type: NewsRefreshType
     data: News
 }
 
+export enum NewsRefreshType {
+    NEW = "NEW",
+    REPLACED = "REPLACED",
+    ANALYZED = "ANALYZED"
+}
+
+
+let clientIo: Namespace
+let crawlerIo
+let engineIo
 
 export function initSockets(app) {
 
@@ -25,10 +35,9 @@ export function initSockets(app) {
     });
 
 
-    const clientIo = io.of('/client');
-    const crawlerIo = io.of('/crawler');
-    const engineIo = io.of('/engine');
-
+    clientIo = io.of('/client');
+    crawlerIo = io.of('/crawler');
+    engineIo = io.of('/engine');
 
     clientIo.on('connection', function (socket) {
         console.log('clientIo connected');
@@ -51,7 +60,7 @@ export function initSockets(app) {
                         tags: ["a", "b", "c"]
                     }
                 },
-                type: "new"
+                type: NewsRefreshType.ANALYZED
             };
             fn(news);
         })
@@ -74,4 +83,13 @@ export function initSockets(app) {
     });
     engineIo.emit('hi', 'engine');
 // endregion
+}
+
+
+export function newsEventToClient(type: NewsRefreshType, news: News) {
+    const data: NewsToClientEvent = {
+        data: news,
+        type: type
+    };
+    clientIo.emit('news', data);
 }
