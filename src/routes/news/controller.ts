@@ -113,9 +113,10 @@ async function analyzeCrawledNews(news: News): Promise<News> {
                 }
             }
         );
-        newsEventToClient(NewsRefreshType.ANALYZED, updated)
+        newsEventToClient(NewsRefreshType.ANALYZED, updated);
         return updated;
     } catch (e) {
+        console.log(e);
         return null
     }
 }
