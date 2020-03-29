@@ -45,7 +45,9 @@ type NewsGroup{
 
 type UpdateTransaction{
   id: ID! @id
-  operation: UpdateTransactionOperation
+  operation: UpdateTransactionOperation!
+  reason: String
+  at: DateTime @createdAt
 }
 
 type SpamMark @embedded{
