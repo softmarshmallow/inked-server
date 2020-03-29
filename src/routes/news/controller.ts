@@ -1,6 +1,6 @@
-import {News, prisma, SpamTag} from "../../generated/prisma-client";
+import {News, NewsCategory, prisma, SpamMark, SpamTag} from "../../generated/prisma-client";
 
-import {CREATED, CONFLICT, INTERNAL_SERVER_ERROR, ACCEPTED} from "http-status-codes";
+import {CREATED, CONFLICT, INTERNAL_SERVER_ERROR, ACCEPTED, BAD_REQUEST} from "http-status-codes";
 import moment = require("moment");
 import Axios from "axios";
 
@@ -66,9 +66,11 @@ interface DuplicateCheckResponse {
     news?: News
 }
 
+const ENGINE_BASE_URL = "http://localhost:8001/api/news";
+
 async function checkDuplicate(news: News): Promise<DuplicateCheckResponse> {
     try {
-        const res = await Axios.post<DuplicateCheckResponse>("http://localhost:8001/api/news/tools/duplicate-check", news);
+        const res = await Axios.post<DuplicateCheckResponse>(`${ENGINE_BASE_URL}/tools/duplicate-check`, news);
         return res.data
     } catch (e) {
         return {
@@ -77,6 +79,49 @@ async function checkDuplicate(news: News): Promise<DuplicateCheckResponse> {
             reason: "engine did not response properly"
         }
     }
+}
+
+
+interface SingleAnalysisResult {
+    spamMarks: [SpamMark]
+    summary: string
+    subject: string
+    category: NewsCategory
+    categories: [NewsCategory]
+    tags: [string]
+}
+
+async function analyzeCrawledNews(news: News): Promise<News> {
+    try {
+        const res = await Axios.post<SingleAnalysisResult>(`${ENGINE_BASE_URL}/analyze`, news);
+        const analysisData = res.data;
+        const updated = await prisma.updateNews(
+            {
+                where: {id: news.id}, data: {
+                    meta: {
+                        update: {
+                            summary: analysisData.summary,
+                            subject: analysisData.subject,
+                            spamMarks: {create: analysisData.spamMarks},
+                            category: analysisData.category,
+                            categories: {set: analysisData.categories},
+                            tags: { set: analysisData.tags}
+                        }
+                    }
+                }
+            }
+        );
+        return updated;
+    } catch (e) {
+        return null
+    }
+}
+
+
+async function getSingleNews(req, res){
+    const {id} = req.params;
+    const news = await prisma.news({id});
+    res.json(news)
 }
 
 async function replaceCrawledNews(targetId: string, updateWith: News,): Promise<News> {
@@ -106,8 +151,9 @@ async function replaceCrawledNews(targetId: string, updateWith: News,): Promise<
     return updated
 }
 
-function indexNews(news: News) {
+async function indexNews(news: News) {
     // todo index to search engine
+    await analyzeCrawledNews(news)
 }
 
 const getRandomNewsBySpamTag = async (req, res) => {
@@ -120,17 +166,23 @@ const getRandomNewsBySpamTag = async (req, res) => {
         case "NOTSPAM":
             break;
     }
-}
+};
 
 const postTagNewsWithSpamTag = async (req, res) => {
     const {id, tag, reason} = req.body;
-    prisma.$exists.news({
+    const exists = await prisma.$exists.news({
         id: id,
-        meta: {}
-    })
+        meta: {
+            spamMarks_none: {spam: tag}
+        }
+    });
+    if (exists) {
+        res.status(BAD_REQUEST).json({"reason": "news already marked as spam"});
+        return
+    }
 
     // add spam mark data
-    prisma.updateNews({
+    const updated = await prisma.updateNews({
         where: {id: id},
         data: {
             meta: {
@@ -144,8 +196,9 @@ const postTagNewsWithSpamTag = async (req, res) => {
                 }
             }
         }
-    })
-}
+    });
+    res.json(updated);
+};
 
 
 const getAllNews = async (req, res) => {
@@ -168,6 +221,7 @@ const getRecentNewses = async (req, res) => {
 export {
     postCrawledNews,
     getAllNews,
+    getSingleNews,
     getRecentNewses,
 
     // region spam
