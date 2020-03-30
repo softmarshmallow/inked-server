@@ -1,0 +1,12 @@
+type User {
+    id: ID! @id
+    name: String!
+    uid: String @unique
+    robot: Boolean
+    settings: UserSettings @relation(link: INLINE)
+}
+
+type UserSettings{
+    id: ID! @id
+    favoriteNews: [News] @relation(link: INLINE)
+}

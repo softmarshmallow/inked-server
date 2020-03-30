@@ -1,5 +1,7 @@
 endpoint: http://localhost:4466
-datamodel: datamodel.graphql
+datamodel:
+  - news.graphql
+  - user.graphql
 databaseType: document
 generate:
   - generator: typescript-client

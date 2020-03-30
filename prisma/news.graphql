@@ -1,15 +1,3 @@
-type User {
-  id: ID! @id
-  name: String!
-  token: String @unique
-  robot: Boolean
-  settings: UserSettings @relation(link: INLINE)
-}
-
-type UserSettings{
-  id: ID! @id
-  favoriteNews: [News] @relation(link: INLINE)
-}
 
 type News{
   id: ID! @id

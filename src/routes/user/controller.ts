@@ -7,6 +7,14 @@ const createUser = async (req, res) => {
     res.json(result)
 };
 
+
+
+async function getMe(req, res) {
+    res.json({"ok": res.locals.ok})
+}
+
+
 export {
-    createUser
+    createUser,
+    getMe
 }
