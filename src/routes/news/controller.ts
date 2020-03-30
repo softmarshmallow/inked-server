@@ -211,12 +211,10 @@ const getAllNews = async (req, res) => {
 };
 
 const getRecentNewses = async (req, res) => {
-    var newDateObj = moment(Date.now()).subtract(5, 'm').toDate();
-
     const result = await prisma.newses({
         where: {
-            time_gte: newDateObj,
-        }, first: 50, orderBy: "time_ASC"
+            time_gt: moment(Date.now()).subtract(5, 'm').format(),
+        }, first: 50, orderBy: "time_DESC"
     });
     res.json(result)
 }

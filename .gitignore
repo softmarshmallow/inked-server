@@ -44,3 +44,6 @@ buildkite-script-*
 generated
 src/generated/
 docker-compose-production.yml
+
+# credentials
+credentials

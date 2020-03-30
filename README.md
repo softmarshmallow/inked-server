@@ -5,6 +5,8 @@ run docker compose
 `docker-compose up -d`
 > if productioon `sudo docker-compose -f docker-compose-production.yml up -d`
 
+## provide credential files
+> at `/credentials`, you need `firebase-adminsdk.json` of your own.
 
 install prisma cli
 `yarn install -g prisma`
