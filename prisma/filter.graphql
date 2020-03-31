@@ -1,0 +1,65 @@
+type FilterTrigger{
+    id: ID! @id
+    filter: FilterGroup! @relation(link: INLINE)
+    action: FilterActionType! @default(value: HIGHTLIGHT)
+}
+
+
+enum FilterActionType{
+    ALERT
+    NOTIFY
+    HIGHTLIGHT
+    IGNORE
+    HIDE
+}
+
+
+type FilterGroup{
+    id: ID! @id
+    name: String!
+    namespace: FilterNamespaceType!
+    owner: User @relation(link: INLINE)
+    layers: [FilterLayer]! @relation(link: INLINE)
+    filters: [FilterGroup]! @relation(link: INLINE)
+}
+
+type FilterLayer{
+    id: ID! @id
+    namespace: FilterNamespaceType!
+    field: String!
+    operator: FilterOperationType!
+    value: String!
+    isValueMany: Boolean! @default(value:false)
+    valueType: ValueType! @default(value:TEXT)
+}
+
+enum FilterNamespaceType{
+    NEWS
+    NEWSMETA
+}
+
+enum FilterOperationType{
+    OF # match id
+    IS
+    NOT
+    IN
+    NOT_IN
+    CONTAINS
+    NOT_CONTAINS
+    STARTS_WITH
+    NOT_STARTS_WITH
+    ENDS_WITH
+    NOT_ENDS_WITH
+    GT
+    GTE
+    LT
+    LTE
+}
+
+
+enum ValueType{
+    TEXT
+    NUMBER
+    TIME
+    ENUM
+}

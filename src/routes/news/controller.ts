@@ -53,7 +53,7 @@ const postCrawledNews = async (req, res) => {
                 meta: {create: meta}
             });
             newsEventToClient(NewsRefreshType.NEW, result);
-            indexNews(result);
+            updateNews(result);
             res.status(CREATED).json(result);
         }
     } catch (e) {
@@ -113,13 +113,14 @@ async function analyzeCrawledNews(news: News): Promise<News> {
                 }
             }
         );
-        newsEventToClient(NewsRefreshType.ANALYZED, updated);
         return updated;
     } catch (e) {
-        console.log(e);
+        console.error(e);
         return null
     }
 }
+
+
 
 
 async function getSingleNews(req, res){
@@ -151,13 +152,33 @@ async function replaceCrawledNews(targetId: string, updateWith: News,): Promise<
         }
     );
     newsEventToClient(NewsRefreshType.REPLACED, updated);
-    indexNews(updated);
+    updateNews(updated);
     return updated
 }
 
+async function updateNews(news: News) {
+    try {
+        const updated = await analyzeCrawledNews(news);
+        const indexed = await indexNews(updated);
+        newsEventToClient(NewsRefreshType.ANALYZED, updated);
+    }catch (e) {
+        console.error(e);
+        return null
+    }
+}
+
+
+interface IndexResult{
+    result: string
+}
+
 async function indexNews(news: News) {
-    // todo index to search engine
-    const updated = await analyzeCrawledNews(news);
+    try {
+        const res = await Axios.post<IndexResult>(`${ENGINE_BASE_URL}/index`, news);
+        return res.data
+    }catch (e) {
+        console.error(e);
+    }
 }
 
 const getRandomNewsBySpamTag = async (req, res) => {
