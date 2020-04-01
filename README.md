@@ -1,5 +1,7 @@
 # inked server
 
+> a RealWorld, fully functioning service server built on **prisma / typescript / express
+
 run docker compose
 
 `docker-compose up -d`
