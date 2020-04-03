@@ -10,6 +10,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json({limit: '10mb'}));
 app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
+app.use('/static', express.static('public'));
 app.use('/api', router);
 
 initSockets(app);
