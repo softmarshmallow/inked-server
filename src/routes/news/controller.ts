@@ -8,8 +8,8 @@ import {polishProvider} from "../../utils/crawler/polish-provider";
 
 const postCrawledNews = async (req, res) => {
     try {
-        const {title, content, time, meta, originUrl, provider} = req.body;
-        const polishedProvider = polishProvider(provider);
+        const {title, content, time, meta, originUrl} = req.body;
+        const provider = polishProvider(req.body["provider"]);
         let exists: boolean;
         let reason: string = "";
         if (originUrl == null) {
@@ -28,7 +28,7 @@ const postCrawledNews = async (req, res) => {
                     id: null,
                     title: title,
                     content: content,
-                    provider: polishedProvider,
+                    provider: provider,
                     time: time,
                     originUrl: originUrl,
                     meta: meta
