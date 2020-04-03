@@ -4,10 +4,12 @@ import {CREATED, CONFLICT, INTERNAL_SERVER_ERROR, ACCEPTED, BAD_REQUEST} from "h
 import moment = require("moment");
 import Axios from "axios";
 import {newsEventToClient, NewsRefreshType} from "../../sockets";
+import {polishProvider} from "../../utils/crawler/polish-provider";
 
 const postCrawledNews = async (req, res) => {
     try {
         const {title, content, time, meta, originUrl, provider} = req.body;
+        const polishedProvider = polishProvider(provider);
         let exists: boolean;
         let reason: string = "";
         if (originUrl == null) {
@@ -26,7 +28,7 @@ const postCrawledNews = async (req, res) => {
                     id: null,
                     title: title,
                     content: content,
-                    provider: provider,
+                    provider: polishedProvider,
                     time: time,
                     originUrl: originUrl,
                     meta: meta
