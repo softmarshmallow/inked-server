@@ -3,6 +3,7 @@ datamodel:
   - news.graphql
   - user.graphql
   - filter.graphql
+  - newsfilter.graphql
 databaseType: document
 generate:
   - generator: typescript-client

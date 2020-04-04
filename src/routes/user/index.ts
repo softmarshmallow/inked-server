@@ -4,5 +4,5 @@ import {authMiddleware} from "../../middlewares/auth";
 const router = express.Router();
 
 router.post('/', createUser);
-router.get('/me', authMiddleware, getMe)
+router.get('/me', authMiddleware, getMe);
 export {router};

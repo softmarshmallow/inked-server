@@ -1,0 +1,6 @@
+type TermsNewsFilter{
+    id: ID! @id
+    user: User @relation(link: INLINE)
+    terms: String!
+    action: FilterActionType! @default(value: HIGHTLIGHT)
+}
