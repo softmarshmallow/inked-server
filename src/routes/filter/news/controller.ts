@@ -13,7 +13,7 @@ async function postCreateTermsNewsFilter(req, res) {
         );
         res.status(CREATED).json(createdTermsNewsFilter);
     } catch (e) {
-        console.log(e);
+        console.error(e);
         res.status(INTERNAL_SERVER_ERROR).send();
     }
 
@@ -31,7 +31,7 @@ async function getSngleTermsNewsFilter(req, res) {
         res.status(OK).json(item);
     }
     catch (e) {
-        console.log(e);
+        console.error(e);
         res.status(INTERNAL_SERVER_ERROR).send();
     }
 }
@@ -48,7 +48,7 @@ async function patchUpdateSingleTermsNewsFilter(req, res) {
         });
         res.status(ACCEPTED).json(updated);
     } catch (e) {
-        console.log(e);
+        console.error(e);
         res.status(INTERNAL_SERVER_ERROR).send();
     }
 }
@@ -59,7 +59,7 @@ async function deleteSingleTermsNewsFilter(req, res) {
         const deleted = await prisma.deleteTermsNewsFilter({id: id});
         res.status(ACCEPTED).json(deleted);
     } catch (e) {
-        console.log(e);
+        console.error(e);
         res.status(INTERNAL_SERVER_ERROR).send();
     }
 }
