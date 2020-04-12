@@ -27,6 +27,10 @@ deploy server production
 `pm2 start ecosystem.config.js`
 
 
+### seed
+`ts-note src/seed/index/ts`
+
+
 ### enviroments
 
 - Prisma 
