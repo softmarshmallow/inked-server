@@ -217,13 +217,13 @@ const getRandomNewsBySpamTag = async (req, res) => {
 
 const postTagNewsWithSpamTag = async (req, res) => {
     const {id, tag, reason} = req.body;
-    const exists = await prisma.$exists.news({
+    const notExits = await prisma.$exists.news({
         id: id,
         meta: {
             spamMarks_none: {spam: tag}
         }
     });
-    if (exists) {
+    if (!notExits) {
         res.status(BAD_REQUEST).json({"reason": "news already marked as spam"});
         return
     }
