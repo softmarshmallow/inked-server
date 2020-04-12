@@ -224,8 +224,8 @@ const postTagNewsWithSpamTag = async (req, res) => {
         }
     });
     if (!notExits) {
-        res.status(BAD_REQUEST).json({"reason": "news already marked as spam"});
-        return
+        const news = await prisma.news({id: id})
+        res.status(BAD_REQUEST).json(news);
     }
 
     // add spam mark data
