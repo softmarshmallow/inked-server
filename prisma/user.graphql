@@ -8,6 +8,6 @@ type User {
 }
 
 type UserSettings @embedded{
-    favoriteNews: [News]! @relation(link: INLINE, name: "USER_FAVORITE_NEWS")
+    favoriteNewses: [News]! @relation(link: INLINE, name: "USER_FAVORITE_NEWS")
     memo: String!
 }

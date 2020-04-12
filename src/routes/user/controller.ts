@@ -22,7 +22,7 @@ async function postRegisterFavoriteNews(req, res) {
         data: {
             settings: {
                 update: {
-                    favoriteNews: {
+                    favoriteNewses: {
                         connect: {id: news}
                     }
                 }
@@ -42,7 +42,7 @@ async function deleteRemoveFavoriteNews(req, res) {
         where: {id: userId}, data: {
             settings: {
                 update: {
-                    favoriteNews: {
+                    favoriteNewses: {
                         disconnect: {id: news}
                     }
                 }
@@ -55,10 +55,10 @@ async function deleteRemoveFavoriteNews(req, res) {
 }
 
 async function userFavoriteNewses(id: string): Promise<Array<News>>{
-    return  await prisma.user({id: id}).settings().favoriteNews()
+    return  await prisma.user({id: id}).settings().favoriteNewses()
 }
 
-async function getFavoritNewses(req, res) {
+async function getFavoriteNewses(req, res) {
     const newses = await userFavoriteNewses(res.locals.user.id);
     res.status(OK).json(newses);
 }
@@ -66,7 +66,7 @@ async function getFavoritNewses(req, res) {
 export {
     createUser,
     getMe,
-    getFavoritNewses,
+    getFavoriteNewses,
     postRegisterFavoriteNews,
     deleteRemoveFavoriteNews
 }
