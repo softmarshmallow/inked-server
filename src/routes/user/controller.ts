@@ -23,7 +23,7 @@ async function postRegisterFavoriteNews(req, res) {
             settings: {
                 update: {
                     favoriteNews: {
-                        set: [{id: news}]
+                        connect: {id: news}
                     }
                 }
             }
@@ -43,7 +43,7 @@ async function deleteRemoveFavoriteNews(req, res) {
             settings: {
                 update: {
                     favoriteNews: {
-                        disconnect: [{id: news}]
+                        disconnect: {id: news}
                     }
                 }
             }
