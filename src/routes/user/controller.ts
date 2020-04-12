@@ -23,7 +23,7 @@ async function postRegisterFavoriteNews(req, res) {
             settings: {
                 update: {
                     favoriteNews: {
-                        connect: [{id: news}]
+                        set: [{id: news}]
                     }
                 }
             }
