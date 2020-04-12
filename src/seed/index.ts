@@ -12,7 +12,7 @@ async function seed() {
         robot: false,
         settings: {
             create: {
-                favoriteNews: {create: []},
+                favoriteNewses: {create: []},
                 memo: "created by seeding"
             }
         }
@@ -25,7 +25,7 @@ async function seed() {
         robot: true,
         settings: {
             create: {
-                favoriteNews: {create: []},
+                favoriteNewses: {create: []},
                 memo: "created by seeding"
             }
         }
