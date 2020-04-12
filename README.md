@@ -30,8 +30,11 @@ deploy server production
 ### seed
 `ts-note src/seed/index/ts`
 
+## create mongo db index manually
+- News.time -> must create index for better performance
 
-### enviroments
+
+### environments
 
 - Prisma 
 - mongodb
