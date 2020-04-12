@@ -204,7 +204,7 @@ const getRandomNewsBySpamTag = async (req, res) => {
                 },
             },
         },
-        first: 50,
+        first: 200,
     });
     console.log(results);
 
