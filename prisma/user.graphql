@@ -3,11 +3,12 @@ type User {
     name: String!
     uid: String! @unique
     robot: Boolean! @default(value: false)
-    settings: UserSettings!
+    settings: UserSettings! @relation(link: INLINE, name: "USER_PROFILE")
     registeredAt: DateTime! @createdAt
 }
 
-type UserSettings @embedded{
+type UserSettings{
+    id: ID! @id
     favoriteNewses: [News]! @relation(link: INLINE, name: "USER_FAVORITE_NEWS")
     memo: String!
 }
