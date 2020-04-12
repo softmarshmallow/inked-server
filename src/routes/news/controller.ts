@@ -1,6 +1,13 @@
 import {News, NewsCategory, prisma, SpamMark, SpamTag} from "../../generated/prisma-client";
 
-import {CREATED, CONFLICT, INTERNAL_SERVER_ERROR, ACCEPTED, BAD_REQUEST} from "http-status-codes";
+import {
+    CREATED,
+    CONFLICT,
+    INTERNAL_SERVER_ERROR,
+    ACCEPTED,
+    BAD_REQUEST,
+    OK, NO_CONTENT
+} from "http-status-codes";
 import moment = require("moment");
 import Axios from "axios";
 import {newsEventToClient, NewsRefreshType} from "../../sockets";
@@ -184,14 +191,27 @@ async function indexNews(news: News) {
 }
 
 const getRandomNewsBySpamTag = async (req, res) => {
-    const {tag} = req.body;
-    switch (tag as SpamTag) {
-        case "UNTAGGED":
-            break;
-        case "SPAM":
-            break;
-        case "NOTSPAM":
-            break;
+    const from = moment(Date.now()).subtract(1, 'd').format();
+    const {tag} = req.query;
+    console.log(tag);
+    const results = await prisma.newses({
+        where: {
+            time_gte: from,
+            meta : {
+                spamMarks_every : {
+                    spam : tag
+                }
+            },
+        },
+        first: 1,
+        orderBy: "time_DESC"
+    });
+    console.log(results);
+
+    if (results.length == 0){
+        res.status(NO_CONTENT).send();
+    }else {
+        res.status(OK).json(results[0]);
     }
 };
 
