@@ -204,15 +204,15 @@ const getRandomNewsBySpamTag = async (req, res) => {
                 },
             },
         },
-        first: 1,
-        orderBy: "time_DESC"
+        first: 50,
     });
     console.log(results);
 
     if (results.length == 0){
         res.status(NO_CONTENT).send();
     }else {
-        res.status(OK).json(results[0]);
+        const item = results[Math.floor(Math.random() * results.length)];
+        res.status(OK).json(item);
     }
 };
 
