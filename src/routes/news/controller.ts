@@ -198,9 +198,10 @@ const getRandomNewsBySpamTag = async (req, res) => {
         where: {
             time_gte: from,
             meta : {
+                // fixme check this logic
                 spamMarks_every : {
-                    spam : tag
-                }
+                    spam: tag
+                },
             },
         },
         first: 1,
