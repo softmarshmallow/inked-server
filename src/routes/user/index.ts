@@ -4,7 +4,7 @@ import {
     getMe,
     postRegisterFavoriteNews,
     deleteRemoveFavoriteNews,
-    getFavoriteNewses, postUpdateUserProviderSetting, getAllUserProviderSettings
+    getFavoriteNewses, postUpdateUserProviderSetting, getUserProviderSettings
 } from "./controller";
 import {authMiddleware} from "../../middlewares/auth";
 
@@ -17,6 +17,6 @@ router.post('/news/favorite', authMiddleware, postRegisterFavoriteNews);
 router.delete('/news/favorite', authMiddleware, deleteRemoveFavoriteNews);
 
 
-router.get('/settings/provider', authMiddleware, getAllUserProviderSettings);
+router.get('/settings/provider', authMiddleware, getUserProviderSettings);
 router.post('/settings/provider', authMiddleware, postUpdateUserProviderSetting);
 export {router};

@@ -1,6 +1,10 @@
-import {News, prisma, ProviderAvailabilityType} from "../../generated/prisma-client";
+import {
+    News,
+    prisma,
+    ProviderAvailabilityType,
+    ProviderSettings
+} from "../../generated/prisma-client";
 import {OK} from "http-status-codes";
-import {writeHeapSnapshot} from "v8";
 
 const createUser = async (req, res) => {
     const result = await prisma.createUser({
@@ -66,10 +70,14 @@ async function getFavoriteNewses(req, res) {
 // region settings
 // region settings/provider
 
-async function getAllUserProviderSettings(req, res) {
+async function getUserProviderSettings(req, res) {
     const userSettingsId = await prisma.user({id: res.locals.user.id}).settings().id();
-    const providerSettings = await prisma.userSettings({id: userSettingsId}).providerSettings()
+    const providerSettings = await fetchUserProviderSettings(userSettingsId)
     res.status(OK).json(providerSettings);
+}
+
+async function fetchUserProviderSettings(userSettingsId: string): Promise<Array<ProviderSettings>>{
+    return  await prisma.userSettings({id: userSettingsId}).providerSettings();
 }
 
 interface DTO_UpdateProviderSettings {
@@ -116,7 +124,8 @@ async function postUpdateUserProviderSetting(req, res) {
             }
         })
     }
-    res.status(OK).json(updatedOrCreated)
+    const providerSettings = await fetchUserProviderSettings(settingId);
+    res.status(OK).json(providerSettings)
 }
 
 // endregion settings/provider
@@ -128,6 +137,6 @@ export {
     getFavoriteNewses,
     postRegisterFavoriteNews,
     deleteRemoveFavoriteNews,
-    getAllUserProviderSettings,
+    getUserProviderSettings,
     postUpdateUserProviderSetting
 }
