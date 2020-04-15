@@ -10,5 +10,17 @@ type User {
 type UserSettings{
     id: ID! @id
     favoriteNewses: [News]! @relation(link: INLINE, name: "USER_FAVORITE_NEWS")
+    providerSettings: [ProviderSettings]! @relation(link: INLINE, name: "USER_PROVIDER_SETTINGS")
     memo: String!
+}
+
+type ProviderSettings @embedded{
+    provider: String!
+    availability: ProviderAvailabilityType! @default(value:ENABLED)
+}
+
+enum ProviderAvailabilityType{
+    ENABLED
+    DISABLED
+    MUTUAL
 }

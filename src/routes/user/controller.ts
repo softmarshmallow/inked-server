@@ -1,4 +1,4 @@
-import {News, prisma} from "../../generated/prisma-client";
+import {News, prisma, ProviderAvailabilityType} from "../../generated/prisma-client";
 import {OK} from "http-status-codes";
 import {writeHeapSnapshot} from "v8";
 
@@ -54,8 +54,8 @@ async function deleteRemoveFavoriteNews(req, res) {
     res.status(OK).json(newses);
 }
 
-async function userFavoriteNewses(id: string): Promise<Array<News>>{
-    return  await prisma.user({id: id}).settings().favoriteNewses()
+async function userFavoriteNewses(id: string): Promise<Array<News>> {
+    return await prisma.user({id: id}).settings().favoriteNewses()
 }
 
 async function getFavoriteNewses(req, res) {
@@ -63,10 +63,71 @@ async function getFavoriteNewses(req, res) {
     res.status(OK).json(newses);
 }
 
+// region settings
+// region settings/provider
+
+async function getAllUserProviderSettings(req, res) {
+    const userSettingsId = await prisma.user({id: res.locals.user.id}).settings().id();
+    const providerSettings = await prisma.userSettings({id: userSettingsId}).providerSettings()
+    res.status(OK).json(providerSettings);
+}
+
+interface DTO_UpdateProviderSettings {
+    provider: string
+    availability: ProviderAvailabilityType
+}
+
+async function postUpdateUserProviderSetting(req, res) {
+    const body: DTO_UpdateProviderSettings = req.body;
+    const settingId = await prisma.user({id: res.locals.user.id}).settings().id()
+    const providerSettingExists = await prisma.$exists.userSettings({
+        id: settingId,
+        providerSettings_every: {
+            provider: body.provider
+        }
+    })
+
+    let updatedOrCreated;
+    if (providerSettingExists) {
+        updatedOrCreated = await prisma.updateUserSettings(
+            {
+                where: {id: settingId}, data: {
+                    providerSettings: {
+                        updateMany: {
+                            where: {provider: body.provider},
+                            data: {
+                                availability: body.availability
+                            }
+                        }
+                    }
+                }
+            }
+        )
+    } else {
+        updatedOrCreated = await prisma.updateUserSettings({
+            where: {id: settingId},
+            data: {
+                providerSettings: {
+                    create: {
+                        provider: body.provider,
+                        availability: body.availability
+                    }
+                }
+            }
+        })
+    }
+    res.status(OK).json(updatedOrCreated)
+}
+
+// endregion settings/provider
+// endregion settings
+
 export {
     createUser,
     getMe,
     getFavoriteNewses,
     postRegisterFavoriteNews,
-    deleteRemoveFavoriteNews
+    deleteRemoveFavoriteNews,
+    getAllUserProviderSettings,
+    postUpdateUserProviderSetting
 }
