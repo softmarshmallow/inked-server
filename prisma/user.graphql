@@ -22,5 +22,5 @@ type ProviderSettings @embedded{
 enum ProviderAvailabilityType{
     ENABLED
     DISABLED
-    MUTUAL
+    NEUTRAL
 }
