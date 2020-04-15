@@ -82,7 +82,7 @@ async function postUpdateUserProviderSetting(req, res) {
     const settingId = await prisma.user({id: res.locals.user.id}).settings().id()
     const providerSettingExists = await prisma.$exists.userSettings({
         id: settingId,
-        providerSettings_every: {
+        providerSettings_some: {
             provider: body.provider
         }
     })
