@@ -4,7 +4,7 @@ import {
     ProviderAvailabilityType,
     ProviderSettings
 } from "../../generated/prisma-client";
-import {OK} from "http-status-codes";
+import {INTERNAL_SERVER_ERROR, OK} from "http-status-codes";
 
 const createUser = async (req, res) => {
     const result = await prisma.createUser({
@@ -40,22 +40,27 @@ async function postRegisterFavoriteNews(req, res) {
 
 
 async function deleteRemoveFavoriteNews(req, res) {
-    const {news} = req.body;
-    const userId = res.locals.user.id;
-    await prisma.updateUser({
-        where: {id: userId}, data: {
-            settings: {
-                update: {
-                    favoriteNewses: {
-                        disconnect: {id: news}
+    try{
+        const {news} = req.body;
+        const userId = res.locals.user.id;
+        await prisma.updateUser({
+            where: {id: userId}, data: {
+                settings: {
+                    update: {
+                        favoriteNewses: {
+                            disconnect: {id: news}
+                        }
                     }
                 }
             }
-        }
-    })
+        })
 
-    const newses = await userFavoriteNewses(userId)
-    res.status(OK).json(newses);
+        const newses = await userFavoriteNewses(userId)
+        res.status(OK).json(newses);
+    }catch (e) {
+        console.error(e);
+        res.status(INTERNAL_SERVER_ERROR).send()
+    }
 }
 
 async function userFavoriteNewses(id: string): Promise<Array<News>> {
@@ -71,9 +76,14 @@ async function getFavoriteNewses(req, res) {
 // region settings/provider
 
 async function getUserProviderSettings(req, res) {
-    const userSettingsId = await prisma.user({id: res.locals.user.id}).settings().id();
-    const providerSettings = await fetchUserProviderSettings(userSettingsId)
-    res.status(OK).json(providerSettings);
+    try {
+        const userSettingsId = await prisma.user({id: res.locals.user.id}).settings().id();
+        const providerSettings = await fetchUserProviderSettings(userSettingsId)
+        res.status(OK).json(providerSettings);
+    }catch (e) {
+        console.error(e)
+        res.status(INTERNAL_SERVER_ERROR).send()
+    }
 }
 
 async function fetchUserProviderSettings(userSettingsId: string): Promise<Array<ProviderSettings>>{
