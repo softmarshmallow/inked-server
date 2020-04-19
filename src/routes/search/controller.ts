@@ -33,9 +33,22 @@ function searchHistoryToBasicSearchItem(searchHistory: SearchHistory): core.Sear
 export async function postSearch(req, res) {
     const {term} = req.body;
     const user = res.locals.user;
+    const history = await  createSearchHistory(user.id, term);
+    // todo perform actual search with elasticsearch connector
+    res.status(OK).json(history);
+}
+
+export async function postCreateSearchHistory(req, res){
+    const {term} = req.body;
+    const user = res.locals.user;
+    const history = await  createSearchHistory(user.id, term);
+    res.status(OK).json(history);
+}
+
+async function createSearchHistory(userId, term) {
 
     const exists = await prisma.$exists.searchHistory(
-        {user: {id: user.id}, term: term}
+        {user: {id: userId}, term: term}
     )
 
     let history;
@@ -43,7 +56,7 @@ export async function postSearch(req, res) {
     if (exists) {
         history = (await prisma.searchHistories(
             {
-                where: {user: {id: user.id}, term: term}
+                where: {user: {id: userId}, term: term}
             }
         ))[0];
         history = await prisma.updateSearchHistory(
@@ -56,12 +69,11 @@ export async function postSearch(req, res) {
         )
     } else {
         history = await prisma.createSearchHistory({
-            user: {connect: {id: user.id}},
+            user: {connect: {id: userId}},
             term: term
         })
     }
-
-    res.status(OK).json(history);
+    return history;
 }
 
 export async function remoteSearchHistory(req, res) {
