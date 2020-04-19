@@ -6,17 +6,18 @@ import {initializeFirebaseAdmin} from "./utils/firebase";
 
 const app = express();
 
-import * as cors from 'cors'
 import {authMiddleware} from "./middlewares/auth";
 
-app.use(cors());
-// app.all('/*', function(req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, PUT, PATCH, POST, DELETE');
-//     res.header('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With, Authorization');
-//     next();
-// });
+// import * as cors from 'cors'
+// app.use(cors());
+app.all('/*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, PUT, PATCH, POST, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With, Authorization');
+    next();
+});
 
+// fixme dangerous
 app.use(authMiddleware);
 app.use(bodyParser.json({limit: '10mb'}));
 app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
