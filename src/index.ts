@@ -9,7 +9,7 @@ const app = express();
 import * as cors from 'cors'
 import {authMiddleware} from "./middlewares/auth";
 
-app.use(cors({origin: true}));
+app.use(cors());
 // app.all('/*', function(req, res, next) {
 //     res.header("Access-Control-Allow-Origin", "*");
 //     res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, PUT, PATCH, POST, DELETE');
