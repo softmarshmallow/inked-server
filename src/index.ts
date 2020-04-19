@@ -7,7 +7,8 @@ import {initializeFirebaseAdmin} from "./utils/firebase";
 const app = express();
 
 import * as cors from 'cors'
-app.use(cors());
+
+app.use(cors({origin: true}));
 // app.all('/*', function(req, res, next) {
 //     res.header("Access-Control-Allow-Origin", "*");
 //     res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, PUT, PATCH, POST, DELETE');
@@ -25,5 +26,5 @@ initSockets(app);
 initializeFirebaseAdmin();
 
 app.listen(3000, () =>
-  console.log('Server is running on http://localhost:3000'),
+    console.log('Server is running on http://localhost:3000'),
 );
