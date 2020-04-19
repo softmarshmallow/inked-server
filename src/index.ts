@@ -7,6 +7,7 @@ import {initializeFirebaseAdmin} from "./utils/firebase";
 const app = express();
 
 import * as cors from 'cors'
+import {authMiddleware} from "./middlewares/auth";
 
 app.use(cors({origin: true}));
 // app.all('/*', function(req, res, next) {
@@ -16,7 +17,7 @@ app.use(cors({origin: true}));
 //     next();
 // });
 
-
+app.use(authMiddleware);
 app.use(bodyParser.json({limit: '10mb'}));
 app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
 app.use('/static', express.static('public'));

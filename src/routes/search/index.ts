@@ -8,8 +8,8 @@ import {authMiddleware} from "../../middlewares/auth";
 const router = express.Router();
 
 router.post('/', authMiddleware, postSearch);
-router.get('/', authMiddleware, getBlank);
-router.delete('/history', authMiddleware, remoteSearchHistory)
-router.post('/history', authMiddleware, postCreateSearchHistory)
+router.get('/', getBlank);
+router.delete('/history', remoteSearchHistory)
+router.post('/history', postCreateSearchHistory)
 
 export {router};
