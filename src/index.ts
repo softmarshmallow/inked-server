@@ -6,7 +6,6 @@ import {initSockets} from "./sockets";
 
 const app = express();
 
-// import {authMiddleware} from "./middlewares/auth";
 
 // import * as cors from 'cors'
 // app.use(cors());
@@ -18,7 +17,9 @@ app.all('/*', function(req, res, next) {
 });
 
 // fixme dangerous
-// app.use(authMiddleware);
+import {authMiddleware} from "./middlewares/auth";
+app.use(authMiddleware);
+
 app.use(bodyParser.json({limit: '10mb'}));
 app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
 app.use('/static', express.static('public'));
