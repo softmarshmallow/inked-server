@@ -2,11 +2,11 @@ import * as express from 'express'
 import * as bodyParser from 'body-parser'
 import {router} from "./routes";
 import {initSockets} from "./sockets";
-import {initializeFirebaseAdmin} from "./utils/firebase";
+// import {initializeFirebaseAdmin} from "./utils/firebase";
 
 const app = express();
 
-import {authMiddleware} from "./middlewares/auth";
+// import {authMiddleware} from "./middlewares/auth";
 
 // import * as cors from 'cors'
 // app.use(cors());
@@ -18,14 +18,14 @@ app.all('/*', function(req, res, next) {
 });
 
 // fixme dangerous
-app.use(authMiddleware);
+// app.use(authMiddleware);
 app.use(bodyParser.json({limit: '10mb'}));
 app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
 app.use('/static', express.static('public'));
 app.use('/api', router);
 
 initSockets(app);
-initializeFirebaseAdmin();
+// initializeFirebaseAdmin();
 
 app.listen(3000, () =>
     console.log('Server is running on http://localhost:3000'),
