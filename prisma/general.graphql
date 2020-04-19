@@ -1,5 +1,6 @@
 type SearchHistory{
     id: ID! @id
     user: User! @relation(link:INLINE, name:"SEARCH_BY")
-    term: String
+    term: String!
+    at: DateTime! @updatedAt
 }
