@@ -40,8 +40,10 @@ export function initSockets(app) {
 
     clientIo.on('connection', function (socket) {
         console.log('clientIo connected');
+        socket.on('alert', function(data) {
+            socket.broadcast.emit('alert', data);
+        });
     });
-    clientIo.emit('hi', 'users!');
 
 
     crawlerIo.on('connection', function (socket) {
